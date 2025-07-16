@@ -9,7 +9,7 @@
                 <div class="last-message">{{ room.last_comment_text }}</div>
             </div>
             <div class="room-meta">
-                <div class="timestamp">{{ formatDate(room.last_comment_timestamp) }}</div>
+                <div class="timestamp">{{ formatRelativeDate(room.last_comment_timestamp) }}</div>
                 <div v-if="room.is_waiting" class="badge"></div>
             </div>
         </div>
@@ -28,6 +28,8 @@ export default {
         const currentRoomId = computed(() => chatStore.currentRoomId);
 
         const selectRoom = (roomId) => {
+            console.log("selected room: ", roomId);
+
             chatStore.setCurrentRoom(roomId);
         };
 
@@ -36,11 +38,58 @@ export default {
             return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         };
 
+        const formatRelativeDate = (dateString) => {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffInDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+
+            // For future dates
+            if (date > now) {
+                return date.toLocaleDateString('id-ID', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+            }
+
+            // For recent dates
+            switch (diffInDays) {
+                case 0:
+                    return date.toLocaleTimeString('id-ID');
+                case 1:
+                    return 'Yesterday';
+                case 2:
+                    return '2 days ago';
+                case 3:
+                    return '3 days ago';
+                case 4:
+                case 5:
+                case 6:
+                    return `${diffInDays} days ago`;
+                default:
+                    if (diffInDays < 7) {
+                        return date.toLocaleDateString('id-ID', { weekday: 'long' });
+                    } else if (date.getFullYear() === now.getFullYear()) {
+                        return date.toLocaleDateString('id-ID', {
+                            day: 'numeric',
+                            month: 'long'
+                        });
+                    } else {
+                        return date.toLocaleDateString('id-ID', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric'
+                        });
+                    }
+            }
+        };
+
         return {
             rooms,
             currentRoomId,
             selectRoom,
-            formatDate
+            formatRelativeDate
         };
     }
 };

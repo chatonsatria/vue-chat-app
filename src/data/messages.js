@@ -30,5 +30,12 @@ export const messages = {
       timestamp: "2025-04-23T03:52:30Z",
       avatar: "https://latest-multichannel.qiscus.com/img/default_avatar.svg",
     },
+    {
+      id: 3,
+      sender: "Aimee.Berge68@yahoo.com",
+      text: "Hi there! can you recommend any good product to re-sale?",
+      timestamp: "2025-04-24T03:52:30Z",
+      avatar: "https://latest-multichannel.qiscus.com/img/default_avatar.svg",
+    },
   ],
 };
