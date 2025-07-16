@@ -16,7 +16,6 @@ export default {
 
         const sendMessage = () => {
             if (messageText.value.trim() === '') return;
-
             chatStore.sendMessage(messageText.value);
             messageText.value = '';
         };

@@ -2,6 +2,21 @@ import { defineStore } from "pinia";
 import { rooms } from "../data/rooms";
 import { messages } from "../data/messages";
 
+rooms.forEach((room) => {
+  messages[room.room_id] = [
+    {
+      id: Math.floor(Math.random() * 1000000),
+      sender: room.last_comment_sender_type,
+      text: room.last_comment_text,
+      timestamp: room.last_comment_timestamp,
+      avatar: room.user_avatar_url,
+    },
+    ...(Object.keys(messages).find((key) => key === room.room_id)
+      ? messages[room.room_id]
+      : []),
+  ];
+});
+
 export const useChatStore = defineStore("chat", {
   state: () => ({
     rooms: [...rooms],

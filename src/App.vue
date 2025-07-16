@@ -12,10 +12,11 @@
 </template>
 
 <script>
-import { computed } from 'vue';
+import { computed, onMounted, watch, watchEffect } from 'vue';
 import { useChatStore } from './stores/chat';
 import RoomList from './components/RoomList.vue';
 import ChatRoom from './components/ChatRoom.vue';
+import { useRoute, useRouter } from 'vue-router';
 
 export default {
   components: {
@@ -23,8 +24,21 @@ export default {
     ChatRoom
   },
   setup() {
+    const route = useRoute()
+    const router = useRouter()
+
     const chatStore = useChatStore();
     const unreadCount = computed(() => chatStore.unreadCount);
+
+    watchEffect(() => {
+      if (route.params.roomId) {
+        chatStore.setCurrentRoom(route.params.roomId)
+
+        if (chatStore.currentRoomId === route.params.roomId) {
+          router.push("/")
+        }
+      }
+    })
 
     return {
       unreadCount
@@ -56,7 +70,7 @@ export default {
 }
 
 .header h2 {
-  font-size: 1.2em;
+  font-size: 18px;
 }
 
 .badge {
@@ -68,6 +82,6 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 0.8em;
+  font-size: 12px;
 }
 </style>
