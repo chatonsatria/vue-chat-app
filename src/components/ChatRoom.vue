@@ -1,4 +1,7 @@
 <template>
+    <div v-if="error" class="error-message">
+        Room not found. <router-link to="/">Back to home</router-link>
+    </div>
     <div class="chat-room">
         <div v-if="currentRoom" class="chat-header">
             <img :src="currentRoom.user_avatar_url" class="avatar" />
@@ -22,6 +25,8 @@
 
 <script>
 import { computed } from 'vue';
+import { ref, watch, onMounted } from 'vue';
+import { useRoute } from 'vue-router'
 import { useChatStore } from '../stores/chat';
 import MessageList from './MessageList.vue';
 import MessageInput from './MessageInput.vue';
@@ -31,8 +36,51 @@ export default {
         MessageList,
         MessageInput
     },
-    setup() {
-        const chatStore = useChatStore();
+    props: {
+        roomId: {
+            type: String,
+            required: true
+        }
+    },
+    setup(props) {
+        const error = ref(false)
+        const route = useRoute()
+        const chatStore = useChatStore()
+
+        const checkRoomExists = (roomId) => {
+            return chatStore.rooms.some(room => room.room_id === roomId)
+        }
+
+        onMounted(() => {
+            if (props.roomId && !checkRoomExists(props.roomId)) {
+                error.value = true
+            } else if (props.roomId) {
+                chatStore.setCurrentRoom(props.roomId)
+            }
+        })
+
+        watch(() => route.params.roomId, (newRoomId) => {
+            if (newRoomId && !checkRoomExists(newRoomId)) {
+                error.value = true
+            } else if (newRoomId) {
+                error.value = false
+                chatStore.setCurrentRoom(newRoomId)
+            }
+        })
+
+        // Set room saat komponen dibuat
+        onMounted(() => {
+            if (props.roomId) {
+                chatStore.setCurrentRoom(props.roomId)
+            }
+        })
+
+        // Handle perubahan route
+        watch(() => route.params.roomId, (newRoomId) => {
+            if (newRoomId) {
+                chatStore.setCurrentRoom(newRoomId)
+            }
+        })
 
         const currentRoom = computed(() => chatStore.currentRoom);
 
@@ -42,6 +90,7 @@ export default {
         });
 
         return {
+            error,
             currentRoom,
             roomStatus
         };

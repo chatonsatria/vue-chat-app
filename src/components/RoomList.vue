@@ -18,23 +18,26 @@
 
 <script>
 import { computed } from 'vue';
+import { useRouter } from 'vue-router'
 import { useChatStore } from '../stores/chat';
 
 export default {
     setup() {
+        const router = useRouter()
         const chatStore = useChatStore();
 
-        const rooms = computed(() => chatStore.rooms);
-        const currentRoomId = computed(() => chatStore.currentRoomId);
-
         const selectRoom = (roomId) => {
-            chatStore.setCurrentRoom(roomId);
-        };
+            chatStore.setCurrentRoom(roomId)
+            router.push(`/room/${roomId}`)
+        }
 
         const formatDate = (dateString) => {
             const date = new Date(dateString);
-            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            return date.toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit' });
         };
+
+        const rooms = computed(() => chatStore.rooms);
+        const currentRoomId = computed(() => chatStore.currentRoomId);
 
         return {
             rooms,

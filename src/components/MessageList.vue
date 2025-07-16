@@ -19,10 +19,7 @@ import { useChatStore } from '../stores/chat';
 export default {
     setup() {
         const chatStore = useChatStore();
-
         const messages = computed(() => chatStore.currentMessages);
-        console.log("sender:", messages.value);
-
 
         const formatTime = (timestamp) => {
             const date = new Date(timestamp);

@@ -7,7 +7,8 @@
       </div>
       <RoomList />
     </div>
-    <ChatRoom />
+    <router-view />
+    <!-- <ChatRoom /> -->
   </div>
 </template>
 
@@ -15,12 +16,12 @@
 import { computed } from 'vue';
 import { useChatStore } from './stores/chat';
 import RoomList from './components/RoomList.vue';
-import ChatRoom from './components/ChatRoom.vue';
+// import ChatRoom from './components/ChatRoom.vue';
 
 export default {
   components: {
     RoomList,
-    ChatRoom
+    // ChatRoom
   },
   setup() {
     const chatStore = useChatStore();
