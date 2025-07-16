@@ -503,8 +503,7 @@ export const rooms = [
     room_id: "305955297",
     room_type: "individual",
     source: "line",
-    user_avatar_url:
-      "https://d1edrlpyc25xu0.cloudfront.net/ustat-uxk0zyszks30exo/image/upload/1SGQzBGWZC/0hDSq80YCqG3xcQQ1lbOtlAywRGBZ_MEJuIHBRHW1CF0tpdAh_cSRdHmwVEk9iIgwjeSJXGGpFRkpQUmwaQhfnSFtxRUtldl4ociF.jpg",
+    user_avatar_url: "https://qismo-stag.qiscus.io/img/ic_qiscus_client.png",
     user_id: "U7bfebae90bd43023bb3a1943dd9f5a7a",
   },
   {

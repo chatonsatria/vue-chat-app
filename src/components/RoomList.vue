@@ -28,7 +28,7 @@ export default {
         const currentRoomId = computed(() => chatStore.currentRoomId);
 
         const selectRoom = (roomId) => {
-            console.log("selected room: ", roomId);
+            console.log("selected room:", roomId);
 
             chatStore.setCurrentRoom(roomId);
         };
@@ -45,7 +45,7 @@ export default {
 
             // For future dates
             if (date > now) {
-                return date.toLocaleDateString('id-ID', {
+                return date.toLocaleDateString('en-US', {
                     weekday: 'long',
                     day: 'numeric',
                     month: 'long',
@@ -56,7 +56,7 @@ export default {
             // For recent dates
             switch (diffInDays) {
                 case 0:
-                    return date.toLocaleTimeString('id-ID');
+                    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                 case 1:
                     return 'Yesterday';
                 case 2:
@@ -69,14 +69,14 @@ export default {
                     return `${diffInDays} days ago`;
                 default:
                     if (diffInDays < 7) {
-                        return date.toLocaleDateString('id-ID', { weekday: 'long' });
+                        return date.toLocaleDateString('en-US', { weekday: 'long' });
                     } else if (date.getFullYear() === now.getFullYear()) {
-                        return date.toLocaleDateString('id-ID', {
+                        return date.toLocaleDateString('en-US', {
                             day: 'numeric',
                             month: 'long'
                         });
                     } else {
-                        return date.toLocaleDateString('id-ID', {
+                        return date.toLocaleDateString('en-US', {
                             day: 'numeric',
                             month: 'long',
                             year: 'numeric'
