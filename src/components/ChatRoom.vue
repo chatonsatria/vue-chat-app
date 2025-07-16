@@ -86,7 +86,7 @@ export default {
 }
 
 .room-status {
-    font-size: 0.8em;
+    font-size: 14px;
     color: #666;
 }
 

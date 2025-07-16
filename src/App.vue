@@ -70,7 +70,7 @@ export default {
 }
 
 .header h2 {
-  font-size: 1.2em;
+  font-size: 18px;
 }
 
 .badge {
@@ -82,6 +82,6 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 0.8em;
+  font-size: 12px;
 }
 </style>

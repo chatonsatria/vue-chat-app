@@ -1,16 +1,17 @@
 <template>
     <div class="room-list">
         <div v-for="room in rooms" :key="room.room_id" class="room-item"
-            :class="{ active: currentRoomId === room.room_id, unread: room.is_waiting }"
+            :class="{ active: currentRoomId === room.room_id, unread: room.is_waiting && room.last_comment_sender_type !== 'admin' | 'system' }"
             @click="selectRoom(room.room_id)">
             <img :src="room.user_avatar_url" class="avatar" />
             <div class="room-info">
                 <div class="room-name">{{ room.name }}</div>
-                <div class="last-message">{{ room.last_comment_text }}</div>
+                <div class="last-message">{{ messages[room.room_id].at(-1).text ||
+                    messages[room.room_id].at(-1).item?.detail }}</div>
             </div>
             <div class="room-meta">
-                <div class="timestamp">{{ formatRelativeDate(room.last_comment_timestamp) }}</div>
-                <div v-if="room.is_waiting" class="badge"></div>
+                <div class="timestamp">{{ formatRelativeDate(room.last_comment_timestamp, 1) }}</div>
+                <div v-if="room.is_waiting && room.last_comment_sender_type !== 'admin' | 'system'" class="badge"></div>
             </div>
         </div>
     </div>
@@ -19,75 +20,29 @@
 <script>
 import { computed } from 'vue';
 import { useChatStore } from '../stores/chat';
+import { formatRelativeDate } from '@/utils/FormatDate';
 
 export default {
     setup() {
         const chatStore = useChatStore();
 
         const rooms = computed(() => chatStore.rooms);
+        const messages = chatStore.messages
+        console.log("rooms", rooms);
+        console.log("messages", messages);
+
+
         const currentRoomId = computed(() => chatStore.currentRoomId);
 
         const selectRoom = (roomId) => {
             console.log("selected room:", roomId);
-
             chatStore.setCurrentRoom(roomId);
-        };
-
-        const formatDate = (dateString) => {
-            const date = new Date(dateString);
-            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        };
-
-        const formatRelativeDate = (dateString) => {
-            const date = new Date(dateString);
-            const now = new Date();
-            const diffInDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
-
-            // For future dates
-            if (date > now) {
-                return date.toLocaleDateString('en-US', {
-                    weekday: 'long',
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric'
-                });
-            }
-
-            // For recent dates
-            switch (diffInDays) {
-                case 0:
-                    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                case 1:
-                    return 'Yesterday';
-                case 2:
-                    return '2 days ago';
-                case 3:
-                    return '3 days ago';
-                case 4:
-                case 5:
-                case 6:
-                    return `${diffInDays} days ago`;
-                default:
-                    if (diffInDays < 7) {
-                        return date.toLocaleDateString('en-US', { weekday: 'long' });
-                    } else if (date.getFullYear() === now.getFullYear()) {
-                        return date.toLocaleDateString('en-US', {
-                            day: 'numeric',
-                            month: 'long'
-                        });
-                    } else {
-                        return date.toLocaleDateString('en-US', {
-                            day: 'numeric',
-                            month: 'long',
-                            year: 'numeric'
-                        });
-                    }
-            }
         };
 
         return {
             rooms,
             currentRoomId,
+            messages,
             selectRoom,
             formatRelativeDate
         };
@@ -141,7 +96,7 @@ export default {
 }
 
 .last-message {
-    font-size: 0.8em;
+    font-size: 12px;
     color: #666;
     white-space: nowrap;
     overflow: hidden;
@@ -156,7 +111,7 @@ export default {
 }
 
 .timestamp {
-    font-size: 0.7em;
+    font-size: 10px;
     color: #999;
 }
 
